@@ -1,15 +1,14 @@
 import pandas as pd
 import re
-df = pd.DataFrame({"name":["banana","apple"],
-                    "quantity":[10,3],
-                    "price":[10,1]})
 
 possible_operators=["+","-","*"]
 
 
-
 def add_virtual_column(df:pd.DataFrame,role:str,new_column:str):
     
+    if type(role) != str or type(new_column) != str:
+        return pd.DataFrame([])
+     
     columns= re.split(r'[*\-+]+', role)
     columns = [column.strip().replace(" ","") for column in columns]
     operators = []
@@ -18,10 +17,9 @@ def add_virtual_column(df:pd.DataFrame,role:str,new_column:str):
         if char in possible_operators:
             operators.append(char)
 
-    print(columns)
-    print(operators)
+    
     # Looking for incorrect namings
-    regex = re.compile('[@!#$%^&*()<>?/\|}{~:]')       
+    regex = re.compile(r'[@!#$%^&*()<>?/\|}{~:]')       
     for column in [*columns,new_column]:
         if any(char.isdigit() for char in column) or (regex.search(column) != None):
             return pd.DataFrame([])
@@ -53,6 +51,4 @@ def add_virtual_column(df:pd.DataFrame,role:str,new_column:str):
     
     return df
    
-    
-    
-    
+
